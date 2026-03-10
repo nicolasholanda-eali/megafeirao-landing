@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mega Feirão da Casa Própria — 20, 21 e 22 de Março</title>
+  <meta name="description" content="Em apenas 1 único dia, você faz todo o processo e sai mais perto de virar a chave da sua casa. Evento gratuito em Ribeirão Preto." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue:   '#012e60',
+              green:  '#9ac923',
+              yellow: '#fdc800',
+              dark:   '#011e40',
+              mid:    '#023d80',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── GHL Full-Width Breakout ────────────────────── */
+    .ghl-wrapper {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      overflow-x: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ── Animações de entrada ───────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger-1 { transition-delay: 0ms !important; }
+    .stagger-2 { transition-delay: 100ms !important; }
+    .stagger-3 { transition-delay: 200ms !important; }
+    .stagger-4 { transition-delay: 300ms !important; }
+
+    /* ── CTA Pulsante ───────────────────────────────── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(253, 200, 0, 0.5); }
+      70%  { box-shadow: 0 0 0 14px rgba(253, 200, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(253, 200, 0, 0); }
+    }
+    .cta-pulse { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .cta-pulse:hover { animation: none; transform: translateY(-2px); transition: transform 0.2s; }
+
+    /* ── Cards hover blur ───────────────────────────── */
+    .cards-grid:hover .pain-card { filter: blur(2px); opacity: 0.5; transition: filter 0.3s, opacity 0.3s; }
+    .cards-grid:hover .pain-card:hover { filter: blur(0); opacity: 1; transform: scale(1.02); }
+    .pain-card { transition: filter 0.3s, opacity 0.3s, transform 0.3s; }
+
+    /* ── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #011e40; }
+    ::-webkit-scrollbar-thumb { background: #9ac923; border-radius: 3px; }
+
+    /* ── FAQ Accordion ──────────────────────────────── */
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .faq-answer.open { max-height: 300px; }
+
+    /* ── Timeline ───────────────────────────────────── */
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      bottom: -40px;
+      width: 2px;
+      background: linear-gradient(to bottom, #9ac923, rgba(154,201,35,0.1));
+    }
+    .timeline-item:last-child .timeline-line::before { display: none; }
+
+    /* ── Equipe cursor card ─────────────────────────── */
+    #team-cursor-card {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #team-cursor-card.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  </style>
+</head>
+<body class="bg-brand-blue">
+<div class="ghl-wrapper">
+
+  <!-- SEÇÕES VÃO AQUI -->
+
+</div>
+
+<!-- CURSOR CARD EQUIPE (fora do wrapper) -->
+<div id="team-cursor-card" class="hidden">
+  <div class="bg-brand-blue border border-brand-green/30 rounded-xl p-4 w-56 shadow-2xl">
+    <img id="team-cursor-img" src="" alt="" class="w-16 h-16 rounded-full object-cover mx-auto mb-2 border-2 border-brand-green" />
+    <p id="team-cursor-name" class="text-white font-bold text-sm text-center"></p>
+    <p id="team-cursor-role" class="text-brand-green text-xs text-center mt-1"></p>
+    <p id="team-cursor-company" class="text-white/50 text-xs text-center mt-1"></p>
+  </div>
+</div>
+
+<script>
+// ── JS vai aqui ──
+</script>
+</body>
+</html>
