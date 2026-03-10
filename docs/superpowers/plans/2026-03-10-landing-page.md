@@ -1,0 +1,1606 @@
+# Mega Feirão da Casa Própria — Landing Page Implementation Plan
+
+> **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Construir uma landing page HTML única de alta conversão para o Mega Feirão da Casa Própria, pronta para deploy no GoHighLevel (GHL).
+
+**Architecture:** Arquivo `index.html` único contendo HTML + CSS (via Tailwind CDN) + JavaScript nativo. Todo o conteúdo é encapsulado dentro de `.ghl-wrapper` para garantir full-width no GHL. Seções construídas incrementalmente, cada uma verificada no navegador antes de avançar.
+
+**Tech Stack:** HTML5 · Tailwind CSS CDN · Google Fonts (Inter) · JavaScript ES6 nativo · IntersectionObserver API
+
+**Spec:** `docs/superpowers/specs/2026-03-10-landing-page-design.md`
+
+---
+
+## Chunk 1: Base + Hero + Navbar
+
+### Task 1: Estrutura Base HTML
+
+**Files:**
+- Create: `index.html`
+
+- [ ] **Step 1: Criar o esqueleto base do arquivo**
+
+Criar `index.html` com o seguinte conteúdo:
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mega Feirão da Casa Própria — 20, 21 e 22 de Março</title>
+  <meta name="description" content="Em apenas 1 único dia, você faz todo o processo e sai mais perto de virar a chave da sua casa. Evento gratuito em Ribeirão Preto." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue:   '#012e60',
+              green:  '#9ac923',
+              yellow: '#fdc800',
+              dark:   '#011e40',
+              mid:    '#023d80',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── GHL Full-Width Breakout ────────────────────── */
+    .ghl-wrapper {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      overflow-x: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ── Animações de entrada ───────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger-1 { transition-delay: 0ms !important; }
+    .stagger-2 { transition-delay: 100ms !important; }
+    .stagger-3 { transition-delay: 200ms !important; }
+    .stagger-4 { transition-delay: 300ms !important; }
+
+    /* ── CTA Pulsante ───────────────────────────────── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(253, 200, 0, 0.5); }
+      70%  { box-shadow: 0 0 0 14px rgba(253, 200, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(253, 200, 0, 0); }
+    }
+    .cta-pulse { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .cta-pulse:hover { animation: none; transform: translateY(-2px); transition: transform 0.2s; }
+
+    /* ── Cards hover blur ───────────────────────────── */
+    .cards-grid:hover .pain-card { filter: blur(2px); opacity: 0.5; transition: filter 0.3s, opacity 0.3s; }
+    .cards-grid:hover .pain-card:hover { filter: blur(0); opacity: 1; transform: scale(1.02); }
+    .pain-card { transition: filter 0.3s, opacity 0.3s, transform 0.3s; }
+
+    /* ── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #011e40; }
+    ::-webkit-scrollbar-thumb { background: #9ac923; border-radius: 3px; }
+
+    /* ── FAQ Accordion ──────────────────────────────── */
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .faq-answer.open { max-height: 300px; }
+
+    /* ── Timeline ───────────────────────────────────── */
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      bottom: -40px;
+      width: 2px;
+      background: linear-gradient(to bottom, #9ac923, rgba(154,201,35,0.1));
+    }
+    .timeline-item:last-child .timeline-line::before { display: none; }
+
+    /* ── Equipe cursor card ─────────────────────────── */
+    #team-cursor-card {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #team-cursor-card.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  </style>
+</head>
+<body class="bg-brand-blue">
+<div class="ghl-wrapper">
+
+  <!-- SEÇÕES VÃO AQUI -->
+
+</div>
+
+<!-- CURSOR CARD EQUIPE (fora do wrapper) -->
+<div id="team-cursor-card" class="hidden">
+  <div class="bg-brand-blue border border-brand-green/30 rounded-xl p-4 w-56 shadow-2xl">
+    <img id="team-cursor-img" src="" alt="" class="w-16 h-16 rounded-full object-cover mx-auto mb-2 border-2 border-brand-green" />
+    <p id="team-cursor-name" class="text-white font-bold text-sm text-center"></p>
+    <p id="team-cursor-role" class="text-brand-green text-xs text-center mt-1"></p>
+    <p id="team-cursor-company" class="text-white/50 text-xs text-center mt-1"></p>
+  </div>
+</div>
+
+<script>
+// ── JS vai aqui ──
+</script>
+</body>
+</html>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Abrir `index.html` no navegador. Esperado: página azul escuro em branco, sem erros no console.
+
+- [ ] **Step 3: Commit**
+
+```bash
+cd /Users/Dell/megafeirao-landing
+git init
+git add index.html
+git commit -m "feat: estrutura base HTML com Tailwind, GHL wrapper e CSS global"
+```
+
+---
+
+### Task 2: Navbar Fixa
+
+**Files:**
+- Modify: `index.html` (seção navbar, dentro de `.ghl-wrapper`)
+
+- [ ] **Step 1: Adicionar navbar**
+
+Dentro de `<div class="ghl-wrapper">`, adicionar ANTES de qualquer seção:
+
+```html
+<!-- ── NAVBAR ─────────────────────────────────────── -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Logo / Nome -->
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-brand-yellow rounded-lg flex items-center justify-center">
+        <span class="text-brand-blue font-black text-sm">MF</span>
+      </div>
+      <span class="text-white font-black text-sm tracking-wide hidden sm:block">MEGA FEIRÃO</span>
+    </div>
+    <!-- CTA Navbar -->
+    <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+       class="bg-brand-yellow text-brand-blue font-black text-xs px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors">
+      PARTICIPAR GRÁTIS
+    </a>
+  </div>
+</nav>
+```
+
+- [ ] **Step 2: Adicionar scroll effect para navbar**
+
+No bloco `<script>`, adicionar:
+
+```javascript
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.style.background = 'rgba(1, 46, 96, 0.95)';
+    navbar.style.backdropFilter = 'blur(12px)';
+    navbar.style.borderBottom = '1px solid rgba(154, 201, 35, 0.2)';
+  } else {
+    navbar.style.background = 'transparent';
+    navbar.style.backdropFilter = 'none';
+    navbar.style.borderBottom = 'none';
+  }
+}, { passive: true });
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Rolar a página. Esperado: navbar transparente no topo, fica azul escuro com blur ao scrollar.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: navbar fixa com scroll effect e CTA"
+```
+
+---
+
+### Task 3: Hero com Vídeo de Fundo e Countdown
+
+**Files:**
+- Modify: `index.html` (seção hero, após navbar)
+
+- [ ] **Step 1: Adicionar hero section**
+
+Após a tag `</nav>`, adicionar:
+
+```html
+<!-- ── HERO ───────────────────────────────────────── -->
+<section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20">
+
+  <!-- Vídeo de fundo (substituir src quando disponível) -->
+  <video
+    class="absolute inset-0 w-full h-full object-cover"
+    autoplay muted loop playsinline
+    id="hero-video"
+    style="display: none;">
+    <source src="VIDEO_URL_AQUI" type="video/mp4" />
+  </video>
+
+  <!-- Placeholder gradiente (remover quando vídeo for inserido) -->
+  <div id="hero-placeholder" class="absolute inset-0"
+       style="background: linear-gradient(135deg, #011e40 0%, #012e60 40%, #023d80 70%, #011e40 100%);">
+    <!-- Partículas decorativas -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-green/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-yellow/5 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-brand-blue/75"></div>
+
+  <!-- Conteúdo -->
+  <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+
+    <!-- Badge evento -->
+    <div class="inline-flex items-center gap-2 border border-brand-green/40 rounded-full px-4 py-1.5 mb-6 fade-up stagger-1">
+      <span class="w-2 h-2 bg-brand-green rounded-full animate-pulse"></span>
+      <span class="text-brand-green text-xs font-bold tracking-widest uppercase">Evento Gratuito · 20, 21 e 22 de Março</span>
+    </div>
+
+    <!-- Countdown -->
+    <div class="flex justify-center gap-3 mb-8 fade-up stagger-2">
+      <div class="text-center">
+        <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+          <span id="countdown-days" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+          <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Dias</span>
+        </div>
+      </div>
+      <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+      <div class="text-center">
+        <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+          <span id="countdown-hours" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+          <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Horas</span>
+        </div>
+      </div>
+      <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+      <div class="text-center">
+        <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+          <span id="countdown-minutes" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+          <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Min</span>
+        </div>
+      </div>
+      <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+      <div class="text-center">
+        <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+          <span id="countdown-seconds" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+          <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Seg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-4 fade-up stagger-3">
+      A sua casa própria<br>
+      <span class="text-brand-green">nunca esteve tão perto.</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-medium leading-relaxed fade-up stagger-4">
+      Em apenas <strong class="text-brand-yellow">1 único dia</strong>, você faz todo o processo
+      e sai mais perto de virar a chave da sua casa.
+    </p>
+
+    <!-- CTA -->
+    <div class="fade-up" style="transition-delay: 400ms;">
+      <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+         class="cta-pulse inline-flex items-center gap-3 bg-brand-yellow text-brand-blue font-black text-lg px-8 py-4 rounded-2xl transition-all">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.107 1.523 5.83L0 24l6.341-1.501A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.376l-.36-.213-3.728.882.948-3.625-.234-.373A9.818 9.818 0 0112 2.182c5.428 0 9.818 4.39 9.818 9.818S17.428 21.818 12 21.818z"/>
+        </svg>
+        QUERO PARTICIPAR GRÁTIS
+      </a>
+      <p class="text-white/40 text-sm mt-3">Ribeirão Preto · Vagas limitadas · Sem custo</p>
+    </div>
+
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+    <span class="text-white/30 text-xs uppercase tracking-widest">Role para baixo</span>
+    <svg class="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Adicionar lógica do countdown ao `<script>`**
+
+```javascript
+// ── Countdown ──────────────────────────────────────
+function updateCountdown() {
+  const eventDate = new Date('2026-03-20T00:00:00-03:00');
+  const now = new Date();
+  const diff = eventDate - now;
+
+  if (diff <= 0) {
+    document.getElementById('countdown-days').textContent = '00';
+    document.getElementById('countdown-hours').textContent = '00';
+    document.getElementById('countdown-minutes').textContent = '00';
+    document.getElementById('countdown-seconds').textContent = '00';
+    return;
+  }
+
+  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  document.getElementById('countdown-days').textContent    = String(days).padStart(2, '0');
+  document.getElementById('countdown-hours').textContent   = String(hours).padStart(2, '0');
+  document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
+  document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Esperado: hero com gradiente azul, countdown contando regressivamente, headline visível, CTA amarelo pulsante.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: hero section com countdown regressivo e CTA pulsante"
+```
+
+---
+
+## Chunk 2: Seções 2–5
+
+### Task 4: Seção Números — Prova Social
+
+**Files:**
+- Modify: `index.html` (após `</section>` do hero)
+
+- [ ] **Step 1: Adicionar seção de números**
+
+```html
+<!-- ── NÚMEROS ────────────────────────────────────── -->
+<section class="bg-brand-dark py-16 px-6">
+  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+
+    <div class="text-center fade-up stagger-1">
+      <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="500">0</span>
+      <span class="text-brand-yellow font-black text-4xl md:text-5xl">+</span>
+      <p class="text-white/60 text-sm mt-2 font-medium">Famílias<br>Atendidas</p>
+    </div>
+
+    <div class="text-center fade-up stagger-2">
+      <span class="text-brand-green font-black text-3xl md:text-4xl">R$</span>
+      <span class="text-brand-green font-black text-4xl md:text-5xl counter" data-target="50">0</span>
+      <span class="text-brand-green font-black text-4xl md:text-5xl">M+</span>
+      <p class="text-white/60 text-sm mt-2 font-medium">Em Imóveis<br>Negociados</p>
+    </div>
+
+    <div class="text-center fade-up stagger-3">
+      <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="10">0</span>
+      <span class="text-brand-yellow font-black text-4xl md:text-5xl">+</span>
+      <p class="text-white/60 text-sm mt-2 font-medium">Anos no<br>Mercado</p>
+    </div>
+
+    <div class="text-center fade-up stagger-4">
+      <span class="text-brand-green font-black text-4xl md:text-5xl counter" data-target="98">0</span>
+      <span class="text-brand-green font-black text-4xl md:text-5xl">%</span>
+      <p class="text-white/60 text-sm mt-2 font-medium">Taxa de<br>Aprovação</p>
+    </div>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Adicionar lógica de contadores animados ao `<script>`**
+
+```javascript
+// ── Contadores animados ─────────────────────────────
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = +el.dataset.target;
+    let current = 0;
+    const duration = 2000;
+    const step = target / (duration / 16);
+    function tick() {
+      current += step;
+      if (current >= target) {
+        el.textContent = target;
+        counterObserver.unobserve(el);
+        return;
+      }
+      el.textContent = Math.floor(current);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Rolar até a seção. Esperado: números animam de 0 até o valor alvo em 2 segundos.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao numeros com contadores animados"
+```
+
+---
+
+### Task 5: Seção Dor do Aluguel
+
+**Files:**
+- Modify: `index.html` (após seção números)
+
+- [ ] **Step 1: Adicionar seção dor do aluguel**
+
+```html
+<!-- ── DOR DO ALUGUEL ─────────────────────────────── -->
+<section class="bg-brand-blue py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-green text-xs font-bold uppercase tracking-widest">Você se identifica?</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3 leading-tight">
+        A vida no aluguel é assim:
+      </h2>
+    </div>
+
+    <div class="cards-grid grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="pain-card bg-white/5 border border-white/10 rounded-2xl p-8 cursor-default fade-up stagger-1">
+        <div class="w-14 h-14 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">💸</span>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-3 leading-tight">
+          Você paga todo mês e não tem nada seu
+        </h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Anos de pagamento e no final o imóvel continua sendo do proprietário.
+          Seu dinheiro vai embora sem construir nenhum patrimônio.
+        </p>
+      </div>
+
+      <div class="pain-card bg-white/5 border border-white/10 rounded-2xl p-8 cursor-default fade-up stagger-2">
+        <div class="w-14 h-14 bg-orange-500/10 border border-orange-500/20 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">📈</span>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-3 leading-tight">
+          O aluguel sobe todo ano. Seu salário não acompanha.
+        </h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          A cada renovação, o valor aumenta. E você fica refém de uma situação
+          que foge cada vez mais do seu controle.
+        </p>
+      </div>
+
+      <div class="pain-card bg-white/5 border border-white/10 rounded-2xl p-8 cursor-default fade-up stagger-3">
+        <div class="w-14 h-14 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">😔</span>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-3 leading-tight">
+          Sem patrimônio, sem segurança, sem lugar fixo pra chamar de lar.
+        </h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          A sensação de incerteza é constante. Qualquer mês o dono pode pedir
+          o imóvel de volta e tudo recomeça.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Transição para solução -->
+    <div class="text-center mt-14 fade-up">
+      <p class="text-white/60 text-lg mb-2">E se tudo isso pudesse mudar</p>
+      <p class="text-brand-green font-black text-2xl md:text-3xl">em um único dia?</p>
+    </div>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: 3 cards com hover blur (irmãos ficam desfocados, card ativo fica nítido).
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao dor do aluguel com 3 cards e efeito hover blur"
+```
+
+---
+
+### Task 6: Seção O Evento
+
+**Files:**
+- Modify: `index.html` (após seção dor)
+
+- [ ] **Step 1: Adicionar seção o evento**
+
+```html
+<!-- ── O EVENTO ───────────────────────────────────── -->
+<section class="bg-brand-dark py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+      <!-- Texto -->
+      <div class="fade-up">
+        <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">A solução</span>
+        <h2 class="text-3xl md:text-4xl font-black text-white mt-3 mb-6 leading-tight">
+          O Mega Feirão da<br>
+          <span class="text-brand-green">Casa Própria</span>
+        </h2>
+        <p class="text-white/70 text-base leading-relaxed mb-6">
+          Em <strong class="text-white">1 único dia</strong>, você tem acesso direto aos melhores imóveis,
+          condições exclusivas do programa <strong class="text-brand-yellow">Minha Casa Minha Vida</strong>,
+          e especialistas prontos para aprovar seu financiamento na hora.
+        </p>
+        <p class="text-white/70 text-base leading-relaxed mb-8">
+          É um evento híbrido: você se prepara pelo WhatsApp VIP e comparece à
+          <strong class="text-white">Mansão Realize-se</strong> nos dias 20, 21 ou 22 de Março.
+        </p>
+        <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-brand-green text-brand-blue font-black px-6 py-3 rounded-xl hover:bg-green-400 transition-colors">
+          ENTRAR NO GRUPO VIP
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Logos parceiros -->
+      <div class="fade-up stagger-2">
+        <p class="text-white/40 text-xs uppercase tracking-widest mb-6 text-center">Realização</p>
+        <div class="flex flex-col gap-4">
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4">
+            <!-- Substituir pela logo real quando disponível -->
+            <div class="w-16 h-16 bg-brand-yellow/10 border border-brand-yellow/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-brand-yellow font-black text-lg">TL</span>
+            </div>
+            <div>
+              <p class="text-white font-bold text-lg">Top Life</p>
+              <p class="text-white/50 text-sm">Especialistas em crédito imobiliário</p>
+            </div>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4">
+            <div class="w-16 h-16 bg-brand-green/10 border border-brand-green/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-brand-green font-black text-sm">RI</span>
+            </div>
+            <div>
+              <p class="text-white font-bold text-lg">Realize-se Imóveis</p>
+              <p class="text-white/50 text-sm">Os melhores imóveis de Ribeirão Preto</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: seção split com texto à esquerda e cards de parceiros à direita. Responsivo em mobile (empilhados).
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao o evento com logos placeholders das empresas parceiras"
+```
+
+---
+
+### Task 7: Seção Benefícios
+
+**Files:**
+- Modify: `index.html` (após seção o evento)
+
+- [ ] **Step 1: Adicionar seção benefícios**
+
+```html
+<!-- ── BENEFÍCIOS ────────────────────────────────── -->
+<section class="bg-brand-blue py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-green text-xs font-bold uppercase tracking-widest">O que você encontra</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
+        Condições que você<br>não vai encontrar em lugar nenhum
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="bg-white/5 border border-brand-yellow/20 rounded-2xl p-8 text-center fade-up stagger-1 hover:border-brand-yellow/50 transition-colors">
+        <div class="text-5xl mb-4">🏠</div>
+        <div class="text-brand-yellow font-black text-4xl mb-2">100x</div>
+        <h3 class="text-white font-bold text-lg mb-3">Entrada Parcelada</h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Parcele a entrada em até 100 vezes, sem juros, sem burocracia.
+          Facilidade pensada pra quem não tem tudo guardado agora.
+        </p>
+      </div>
+
+      <div class="bg-brand-green/10 border border-brand-green/30 rounded-2xl p-8 text-center fade-up stagger-2 hover:border-brand-green/60 transition-colors">
+        <div class="text-5xl mb-4">💰</div>
+        <div class="text-brand-green font-black text-2xl mb-2">Menor que<br>o aluguel</div>
+        <h3 class="text-white font-bold text-lg mb-3">Prestação Acessível</h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          A prestação do seu imóvel pode ser menor do que você paga de aluguel hoje.
+          Pague pelo seu e não pelo do outro.
+        </p>
+      </div>
+
+      <div class="bg-white/5 border border-brand-yellow/20 rounded-2xl p-8 text-center fade-up stagger-3 hover:border-brand-yellow/50 transition-colors">
+        <div class="text-5xl mb-4">✅</div>
+        <div class="text-brand-yellow font-black text-xl mb-2">Minha Casa<br>Minha Vida</div>
+        <h3 class="text-white font-bold text-lg mb-3">MCMV Disponível</h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Financiamento pelo programa federal com as melhores taxas do mercado.
+          Nossos especialistas cuidam de tudo no mesmo dia.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: 3 cards com ícones, números em destaque e hover com border mais brilhante.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao beneficios com 3 cards (100x, menor que aluguel, MCMV)"
+```
+
+---
+
+## Chunk 3: Seções 6–8
+
+### Task 8: Seção Como Funciona — Timeline
+
+**Files:**
+- Modify: `index.html` (após seção benefícios)
+
+- [ ] **Step 1: Adicionar seção como funciona**
+
+```html
+<!-- ── COMO FUNCIONA ──────────────────────────────── -->
+<section class="bg-brand-dark py-20 px-6">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">Simples assim</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
+        Do zero à aprovação<br>
+        <span class="text-brand-green">em 4 passos</span>
+      </h2>
+    </div>
+
+    <div class="flex flex-col gap-0">
+
+      <div class="timeline-item relative flex gap-6 pb-10 fade-up stagger-1">
+        <div class="timeline-line relative flex-shrink-0">
+          <div class="w-10 h-10 bg-brand-yellow rounded-full flex items-center justify-center font-black text-brand-blue text-sm z-10 relative">1</div>
+        </div>
+        <div class="pt-1 pb-2">
+          <h3 class="text-white font-bold text-lg mb-2">Inscreva-se no Grupo WhatsApp VIP</h3>
+          <p class="text-white/60 text-sm leading-relaxed">
+            Clique no botão, entre no grupo exclusivo e receba todas as informações
+            do evento antes de todo mundo. É gratuito e sem compromisso.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item relative flex gap-6 pb-10 fade-up stagger-2">
+        <div class="timeline-line relative flex-shrink-0">
+          <div class="w-10 h-10 bg-brand-green rounded-full flex items-center justify-center font-black text-brand-blue text-sm z-10 relative">2</div>
+        </div>
+        <div class="pt-1 pb-2">
+          <h3 class="text-white font-bold text-lg mb-2">Compareça ao Evento</h3>
+          <p class="text-white/60 text-sm leading-relaxed">
+            Nos dias 20, 21 ou 22 de Março, apareça na Mansão Realize-se
+            (das 8h às 22h) com seus documentos. Sem agendamento, é só chegar.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item relative flex gap-6 pb-10 fade-up stagger-3">
+        <div class="timeline-line relative flex-shrink-0">
+          <div class="w-10 h-10 bg-brand-yellow rounded-full flex items-center justify-center font-black text-brand-blue text-sm z-10 relative">3</div>
+        </div>
+        <div class="pt-1 pb-2">
+          <h3 class="text-white font-bold text-lg mb-2">Escolha Seu Imóvel</h3>
+          <p class="text-white/60 text-sm leading-relaxed">
+            Com a ajuda dos nossos especialistas, você conhece as opções disponíveis,
+            condições de pagamento e escolhe o imóvel ideal para você e sua família.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item relative flex gap-6 fade-up stagger-4">
+        <div class="timeline-line relative flex-shrink-0">
+          <div class="w-10 h-10 bg-brand-green rounded-full flex items-center justify-center font-black text-brand-blue text-sm z-10 relative">4</div>
+        </div>
+        <div class="pt-1">
+          <h3 class="text-white font-bold text-lg mb-2">
+            Saia com a Aprovação
+            <span class="ml-2 text-xs bg-brand-green/20 text-brand-green border border-brand-green/30 px-2 py-0.5 rounded-full font-normal">No mesmo dia</span>
+          </h3>
+          <p class="text-white/60 text-sm leading-relaxed">
+            No mesmo dia você sai com a aprovação do financiamento em mãos.
+            Simples, rápido e sem burocracia. A chave da sua casa começa aqui.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: timeline vertical com linha verde conectando os 4 passos, numerados em círculos coloridos alternados.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao como funciona com timeline de 4 passos"
+```
+
+---
+
+### Task 9: Seção Equipe
+
+**Files:**
+- Modify: `index.html` (após seção como funciona)
+
+- [ ] **Step 1: Adicionar seção equipe**
+
+```html
+<!-- ── EQUIPE ─────────────────────────────────────── -->
+<section class="bg-brand-blue py-20 px-6" id="team-section">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-green text-xs font-bold uppercase tracking-widest">Quem cuida de você</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
+        Especialistas prontos<br>para te atender
+      </h2>
+    </div>
+
+    <!-- Desktop: grid com hover -->
+    <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4" id="team-grid">
+
+      <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-1"
+           data-name="NOME DO RESPONSÁVEL"
+           data-role="Diretor Comercial"
+           data-company="Top Life"
+           data-img="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=128">
+        <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-yellow/30 group-hover:border-brand-yellow transition-colors">
+          <img src="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=128"
+               alt="Top Life" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
+        </div>
+        <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+        <p class="text-brand-green text-xs mt-1">Diretor Comercial</p>
+        <p class="text-white/40 text-xs mt-0.5">Top Life</p>
+      </div>
+
+      <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-2"
+           data-name="NOME DO RESPONSÁVEL"
+           data-role="Diretora de Vendas"
+           data-company="Realize-se Imóveis"
+           data-img="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=128">
+        <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-green/30 group-hover:border-brand-green transition-colors">
+          <img src="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=128"
+               alt="Realize-se" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
+        </div>
+        <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+        <p class="text-brand-green text-xs mt-1">Diretora de Vendas</p>
+        <p class="text-white/40 text-xs mt-0.5">Realize-se Imóveis</p>
+      </div>
+
+      <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-3"
+           data-name="NOME DO RESPONSÁVEL"
+           data-role="Especialista MCMV"
+           data-company="Top Life"
+           data-img="https://ui-avatars.com/api/?name=TL&background=023d80&color=fdc800&size=128">
+        <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-yellow/30 group-hover:border-brand-yellow transition-colors">
+          <img src="https://ui-avatars.com/api/?name=TL&background=023d80&color=fdc800&size=128"
+               alt="Top Life" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
+        </div>
+        <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+        <p class="text-brand-green text-xs mt-1">Especialista MCMV</p>
+        <p class="text-white/40 text-xs mt-0.5">Top Life</p>
+      </div>
+
+      <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-4"
+           data-name="NOME DO RESPONSÁVEL"
+           data-role="Consultora de Imóveis"
+           data-company="Realize-se Imóveis"
+           data-img="https://ui-avatars.com/api/?name=RI&background=023d80&color=9ac923&size=128">
+        <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-green/30 group-hover:border-brand-green transition-colors">
+          <img src="https://ui-avatars.com/api/?name=RI&background=023d80&color=9ac923&size=128"
+               alt="Realize-se" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
+        </div>
+        <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+        <p class="text-brand-green text-xs mt-1">Consultora de Imóveis</p>
+        <p class="text-white/40 text-xs mt-0.5">Realize-se Imóveis</p>
+      </div>
+
+    </div>
+
+    <!-- Mobile: accordion -->
+    <div class="md:hidden flex flex-col gap-3" id="team-accordion">
+
+      <div class="team-acc-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-1">
+        <button class="team-acc-btn w-full flex items-center gap-4 p-4 text-left" onclick="toggleTeamAccordion(this)">
+          <img src="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=64"
+               alt="Top Life" class="w-12 h-12 rounded-full border border-brand-yellow/30 flex-shrink-0" width="48" height="48"/>
+          <div class="flex-1">
+            <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+            <p class="text-brand-green text-xs">Top Life</p>
+          </div>
+          <svg class="team-acc-icon w-5 h-5 text-white/40 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="team-acc-body max-h-0 overflow-hidden transition-all duration-300">
+          <p class="px-4 pb-4 text-white/60 text-sm">Diretor Comercial especialista em crédito imobiliário e aprovações MCMV.</p>
+        </div>
+      </div>
+
+      <div class="team-acc-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-2">
+        <button class="team-acc-btn w-full flex items-center gap-4 p-4 text-left" onclick="toggleTeamAccordion(this)">
+          <img src="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=64"
+               alt="Realize-se" class="w-12 h-12 rounded-full border border-brand-green/30 flex-shrink-0" width="48" height="48"/>
+          <div class="flex-1">
+            <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
+            <p class="text-brand-green text-xs">Realize-se Imóveis</p>
+          </div>
+          <svg class="team-acc-icon w-5 h-5 text-white/40 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="team-acc-body max-h-0 overflow-hidden transition-all duration-300">
+          <p class="px-4 pb-4 text-white/60 text-sm">Diretora de vendas com vasta experiência em imóveis residenciais na região.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="text-center text-white/40 text-sm mt-8 fade-up">
+      * Nomes e fotos reais serão inseridos antes do lançamento
+    </p>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Adicionar lógica de equipe ao `<script>`**
+
+```javascript
+// ── Equipe: cursor card (desktop) ──────────────────
+const teamCard = document.getElementById('team-cursor-card');
+document.body.appendChild(teamCard); // necessário: transform no ghl-wrapper quebra position:fixed
+
+let cardX = 0, cardY = 0;
+let mouseX = 0, mouseY = 0;
+
+document.querySelectorAll('.team-member').forEach(member => {
+  member.addEventListener('mouseenter', () => {
+    document.getElementById('team-cursor-img').src = member.dataset.img;
+    document.getElementById('team-cursor-img').alt = member.dataset.name;
+    document.getElementById('team-cursor-name').textContent = member.dataset.name;
+    document.getElementById('team-cursor-role').textContent = member.dataset.role;
+    document.getElementById('team-cursor-company').textContent = member.dataset.company;
+    teamCard.classList.remove('hidden');
+    requestAnimationFrame(() => teamCard.classList.add('visible'));
+
+    // Escurecer outros cards
+    document.querySelectorAll('.team-member').forEach(m => {
+      if (m !== member) { m.style.opacity = '0.3'; m.style.filter = 'blur(1px)'; }
+    });
+  });
+
+  member.addEventListener('mouseleave', () => {
+    teamCard.classList.remove('visible');
+    setTimeout(() => {
+      if (!teamCard.classList.contains('visible')) teamCard.classList.add('hidden');
+    }, 250);
+    document.querySelectorAll('.team-member').forEach(m => {
+      m.style.opacity = ''; m.style.filter = '';
+    });
+  });
+});
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+}, { passive: true });
+
+(function animateCard() {
+  cardX += (mouseX - cardX) * 0.12;
+  cardY += (mouseY - cardY) * 0.12;
+  if (!teamCard.classList.contains('hidden')) {
+    teamCard.style.left = cardX + 'px';
+    teamCard.style.top  = cardY + 'px';
+  }
+  requestAnimationFrame(animateCard);
+})();
+
+// ── Equipe: accordion (mobile) ─────────────────────
+function toggleTeamAccordion(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('.team-acc-icon');
+  const isOpen = body.style.maxHeight && body.style.maxHeight !== '0px';
+
+  // Fechar todos
+  document.querySelectorAll('.team-acc-body').forEach(b => b.style.maxHeight = '0px');
+  document.querySelectorAll('.team-acc-icon').forEach(i => i.style.transform = '');
+
+  if (!isOpen) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    icon.style.transform = 'rotate(180deg)';
+  }
+}
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Desktop: hover nos cards mostra cursor card flutuante com easing, demais cards ficam opacos.
+Mobile (simular em devtools): accordion abre/fecha um por vez.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao equipe com cursor card desktop e accordion mobile"
+```
+
+---
+
+## Chunk 4: Seções 9–11 + CTA + Footer
+
+### Task 10: Seção Local, Data e Horário
+
+**Files:**
+- Modify: `index.html` (após seção equipe)
+
+- [ ] **Step 1: Adicionar seção local**
+
+```html
+<!-- ── LOCAL, DATA E HORÁRIO ─────────────────────── -->
+<section class="bg-brand-dark py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">Quando e onde</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
+        Venha nos encontrar
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+      <div class="bg-white/5 border border-brand-yellow/20 rounded-2xl p-8 text-center fade-up stagger-1">
+        <div class="text-4xl mb-4">📅</div>
+        <h3 class="text-brand-yellow font-black text-xl mb-2">20, 21 e 22</h3>
+        <p class="text-white font-bold">de Março de 2026</p>
+        <p class="text-white/50 text-sm mt-2">Três dias para você<br>escolher o melhor momento</p>
+      </div>
+
+      <div class="bg-white/5 border border-brand-green/20 rounded-2xl p-8 text-center fade-up stagger-2">
+        <div class="text-4xl mb-4">⏰</div>
+        <h3 class="text-brand-green font-black text-xl mb-2">8h às 22h</h3>
+        <p class="text-white font-bold">Funcionamento contínuo</p>
+        <p class="text-white/50 text-sm mt-2">Sem agendamento<br>necessário. É só chegar.</p>
+      </div>
+
+      <div class="bg-white/5 border border-brand-yellow/20 rounded-2xl p-8 text-center fade-up stagger-3">
+        <div class="text-4xl mb-4">📍</div>
+        <h3 class="text-brand-yellow font-black text-lg mb-2">Mansão Realize-se</h3>
+        <p class="text-white/70 text-sm leading-relaxed">
+          R. Maestro Inácio Stábile, 99<br>
+          Alto da Boa Vista<br>
+          Ribeirão Preto — SP
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Mapa -->
+    <div class="rounded-2xl overflow-hidden border border-white/10 fade-up" style="height: 300px;">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3700.1!2d-47.8!3d-21.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDEyJzAwLjAiUyA0N8KwNDgnMDAuMCJX!5e0!3m2!1spt-BR!2sbr!4v1"
+        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Localização do Mega Feirão da Casa Própria">
+      </iframe>
+    </div>
+    <!-- SUBSTITUIR o src do iframe pelo embed real do Google Maps quando disponível -->
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: 3 cards de info + mapa embutido. Em mobile, cards empilhados.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao local com 3 cards informativos e mapa Google Maps"
+```
+
+---
+
+### Task 11: Seção Documentos Necessários
+
+**Files:**
+- Modify: `index.html` (após seção local)
+
+- [ ] **Step 1: Adicionar seção documentos**
+
+```html
+<!-- ── DOCUMENTOS ────────────────────────────────── -->
+<section class="bg-brand-blue py-20 px-6">
+  <div class="max-w-4xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-green text-xs font-bold uppercase tracking-widest">Prepare-se</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
+        O que trazer no dia
+      </h2>
+      <p class="text-white/60 mt-4 max-w-xl mx-auto">
+        São apenas 4 documentos. Separe com antecedência e venha tranquilo.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center fade-up stagger-1 hover:border-brand-yellow/30 transition-colors">
+        <div class="text-3xl mb-3">🪪</div>
+        <p class="text-white font-bold text-sm">RG</p>
+        <p class="text-white/50 text-xs mt-1">Documento de identidade</p>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center fade-up stagger-2 hover:border-brand-yellow/30 transition-colors">
+        <div class="text-3xl mb-3">📋</div>
+        <p class="text-white font-bold text-sm">CPF</p>
+        <p class="text-white/50 text-xs mt-1">Cadastro de Pessoa Física</p>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center fade-up stagger-3 hover:border-brand-yellow/30 transition-colors">
+        <div class="text-3xl mb-3">💵</div>
+        <p class="text-white font-bold text-sm">Comp. de Renda</p>
+        <p class="text-white/50 text-xs mt-1">Holerite ou extrato bancário</p>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center fade-up stagger-4 hover:border-brand-yellow/30 transition-colors">
+        <div class="text-3xl mb-3">🏠</div>
+        <p class="text-white font-bold text-sm">Comp. de Residência</p>
+        <p class="text-white/50 text-xs mt-1">Conta de luz, água ou gás</p>
+      </div>
+
+    </div>
+
+    <!-- Badge gratuito -->
+    <div class="text-center fade-up">
+      <div class="inline-flex items-center gap-3 bg-brand-green/10 border border-brand-green/30 rounded-2xl px-8 py-4">
+        <span class="text-2xl">🎉</span>
+        <div class="text-left">
+          <p class="text-brand-green font-black text-lg">100% Gratuito</p>
+          <p class="text-white/60 text-sm">Sem taxa de inscrição. Sem surpresas.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Verificar no navegador**
+
+Esperado: 4 cards em grid 2x2 (mobile) ou 4 colunas (desktop) com badge verde no final.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao documentos necessarios com 4 cards e badge gratuito"
+```
+
+---
+
+### Task 12: Seção FAQ — Accordion
+
+**Files:**
+- Modify: `index.html` (após seção documentos)
+
+- [ ] **Step 1: Adicionar seção FAQ**
+
+```html
+<!-- ── FAQ ────────────────────────────────────────── -->
+<section class="bg-brand-dark py-20 px-6">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">Dúvidas frequentes</span>
+      <h2 class="text-3xl md:text-4xl font-black text-white mt-3">Perguntas & Respostas</h2>
+    </div>
+
+    <div class="flex flex-col gap-3" id="faq-container">
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-1">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">O evento é realmente gratuito?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            Sim, 100% gratuito. Não há taxa de inscrição, não há custo de entrada e não há
+            nenhuma obrigação de fechar negócio no evento. Você vai, conhece as opções e decide
+            com tranquilidade.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-2">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">Como funciona o processo em 1 dia?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            No evento você tem acesso a especialistas de crédito e corretores de imóveis no mesmo
+            lugar. Você escolhe o imóvel, nossos especialistas fazem a análise de crédito e, se
+            aprovado, você sai com toda a documentação encaminhada no mesmo dia.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-3">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">Posso usar o Minha Casa Minha Vida?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            Sim! Trabalhamos com o programa MCMV que oferece as melhores taxas de juros do
+            mercado. Para famílias com renda de até R$ 8.000/mês, é possível conseguir
+            subsídios do governo e condições especiais.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-4">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">Quais documentos preciso levar?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            Apenas 4 documentos: RG, CPF, comprovante de renda (holerite ou extrato bancário dos
+            últimos 3 meses) e comprovante de residência (conta de luz, água ou gás).
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-1">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">Como é feita a aprovação do crédito?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            No próprio evento, nossos especialistas da Top Life analisam seu perfil e simulam o
+            financiamento na hora. Se aprovado, você recebe a carta de crédito e já pode
+            formalizar a compra do imóvel escolhido.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-2">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="text-white font-bold text-base pr-4">A entrada de 100x tem juros?</span>
+          <svg class="faq-icon w-5 h-5 text-brand-yellow flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="text-white/60 text-sm leading-relaxed pb-6">
+            O parcelamento da entrada em até 100 vezes é uma condição especial negociada
+            diretamente com as construtoras parceiras do evento. As condições exatas variam
+            por imóvel e são apresentadas no dia pelos nossos consultores.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+```
+
+- [ ] **Step 2: Adicionar lógica do FAQ ao `<script>`**
+
+```javascript
+// ── FAQ Accordion ───────────────────────────────────
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const icon   = btn.querySelector('.faq-icon');
+  const isOpen = answer.classList.contains('open');
+
+  // Fechar todos
+  document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-icon').forEach(i => {
+    i.style.transform = '';
+    i.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>';
+  });
+
+  if (!isOpen) {
+    answer.classList.add('open');
+    icon.style.transform = 'rotate(45deg)';
+  }
+}
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Clicar em cada pergunta. Esperado: abre a resposta com animação suave, fecha as demais. Ícone + vira × ao abrir.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: secao FAQ com accordion e 6 perguntas"
+```
+
+---
+
+### Task 13: CTA Final + Footer
+
+**Files:**
+- Modify: `index.html` (após seção FAQ, antes de `</div>` do ghl-wrapper)
+
+- [ ] **Step 1: Adicionar CTA final**
+
+```html
+<!-- ── CTA FINAL ──────────────────────────────────── -->
+<section class="relative py-24 px-6 overflow-hidden">
+  <div class="absolute inset-0 bg-brand-blue"></div>
+  <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, rgba(154,201,35,0.1) 0%, transparent 70%);"></div>
+
+  <div class="relative z-10 max-w-3xl mx-auto text-center">
+
+    <div class="inline-flex items-center gap-2 border border-red-500/40 rounded-full px-4 py-1.5 mb-6 fade-up">
+      <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+      <span id="cta-days-left" class="text-red-400 text-xs font-bold tracking-widest uppercase">Vagas limitadas</span>
+    </div>
+
+    <h2 class="text-4xl md:text-5xl font-black text-white mb-6 leading-tight fade-up stagger-1">
+      Todo mundo merece<br>
+      <span class="text-brand-green">ter a chave da própria casa.</span>
+    </h2>
+
+    <p class="text-white/70 text-xl mb-10 max-w-2xl mx-auto fade-up stagger-2">
+      O Mega Feirão acontece nos dias <strong class="text-brand-yellow">20, 21 e 22 de Março</strong>.
+      Não deixa pra depois — entre agora no grupo VIP e garanta sua vaga.
+    </p>
+
+    <div class="fade-up stagger-3">
+      <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+         class="cta-pulse inline-flex items-center gap-3 bg-brand-yellow text-brand-blue font-black text-xl px-10 py-5 rounded-2xl transition-all">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.107 1.523 5.83L0 24l6.341-1.501A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.376l-.36-.213-3.728.882.948-3.625-.234-.373A9.818 9.818 0 0112 2.182c5.428 0 9.818 4.39 9.818 9.818S17.428 21.818 12 21.818z"/>
+        </svg>
+        GARANTIR MINHA VAGA GRÁTIS
+      </a>
+      <p class="text-white/40 text-sm mt-4">Sem taxa · Sem agendamento · É só aparecer</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────── -->
+<footer class="bg-brand-dark border-t border-white/10 py-12 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 bg-brand-yellow rounded-lg flex items-center justify-center">
+            <span class="text-brand-blue font-black text-sm">MF</span>
+          </div>
+          <span class="text-white font-black">MEGA FEIRÃO</span>
+        </div>
+        <p class="text-white/50 text-sm leading-relaxed">
+          O maior evento imobiliário de Ribeirão Preto.<br>
+          Realização: Top Life + Realize-se Imóveis.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">O Evento</h4>
+        <ul class="space-y-2 text-white/50 text-sm">
+          <li>20, 21 e 22 de Março de 2026</li>
+          <li>8h às 22h (funcionamento contínuo)</li>
+          <li>R. Maestro Inácio Stábile, 99</li>
+          <li>Alto da Boa Vista — Ribeirão Preto</li>
+          <li class="text-brand-green font-medium">Entrada Gratuita</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Participar</h4>
+        <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-brand-green text-brand-blue font-bold text-sm px-4 py-2.5 rounded-lg hover:bg-green-400 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.107 1.523 5.83L0 24l6.341-1.501A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.376l-.36-.213-3.728.882.948-3.625-.234-.373A9.818 9.818 0 0112 2.182c5.428 0 9.818 4.39 9.818 9.818S17.428 21.818 12 21.818z"/>
+          </svg>
+          Grupo WhatsApp VIP
+        </a>
+      </div>
+
+    </div>
+
+    <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-white/30 text-xs">© 2026 Mega Feirão da Casa Própria. Todos os direitos reservados.</p>
+      <p class="text-white/30 text-xs">Top Life + Realize-se Imóveis · Ribeirão Preto — SP</p>
+    </div>
+
+  </div>
+</footer>
+```
+
+- [ ] **Step 2: Adicionar contador de dias no CTA final ao `<script>`**
+
+```javascript
+// ── Atualiza texto de dias restantes no CTA final ──
+function updateCtaDaysLeft() {
+  const eventDate = new Date('2026-03-20T00:00:00-03:00');
+  const now = new Date();
+  const diff = eventDate - now;
+  const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+  const el = document.getElementById('cta-days-left');
+  if (el) {
+    el.textContent = days > 0
+      ? `O evento começa em ${days} dia${days !== 1 ? 's' : ''}`
+      : 'O evento está acontecendo agora!';
+  }
+}
+updateCtaDaysLeft();
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Esperado: CTA com gradiente radial verde, badge vermelho pulsante com dias restantes, botão amarelo grande, footer com 3 colunas.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: CTA final com urgencia e footer completo"
+```
+
+---
+
+## Chunk 5: Animações + Smooth Scroll + Mobile + Substituições
+
+### Task 14: IntersectionObserver para Animações Fade-Up
+
+**Files:**
+- Modify: `index.html` (bloco `<script>`)
+
+- [ ] **Step 1: Adicionar IntersectionObserver ao `<script>`**
+
+```javascript
+// ── IntersectionObserver: fade-up ──────────────────
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+```
+
+- [ ] **Step 2: Adicionar smooth scroll ao `<script>`**
+
+```javascript
+// ── Smooth scroll para âncoras ──────────────────────
+function smoothScrollTo(targetY, duration) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  let start = null;
+  function step(timestamp) {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const ease = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    window.scrollTo(0, startY + diff * ease);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) smoothScrollTo(target.offsetTop - 80, 600);
+  });
+});
+```
+
+- [ ] **Step 3: Verificar no navegador**
+
+Rolar a página lentamente. Esperado: cada seção aparece com fade-up ao entrar no viewport. Primeiro scroll deve ser suave.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add index.html
+git commit -m "feat: animacoes fade-up com IntersectionObserver e smooth scroll 600ms"
+```
+
+---
+
+### Task 15: Substituições Finais e Revisão
+
+**Files:**
+- Modify: `index.html`
+
+- [ ] **Step 1: Substituir todos os `WHATSAPP_LINK`**
+
+Buscar todas as ocorrências de `WHATSAPP_LINK` no arquivo e substituir pelo link real do grupo.
+
+```
+Buscar: href="WHATSAPP_LINK"
+Substituir: href="https://chat.whatsapp.com/SEU_LINK_REAL"
+```
+
+- [ ] **Step 2: Substituir `VIDEO_URL_AQUI` e ativar vídeo**
+
+Quando o vídeo MP4 estiver disponível:
+1. Substituir `VIDEO_URL_AQUI` pela URL do vídeo hospedado em CDN
+2. Remover `style="display: none;"` da tag `<video>`
+3. Remover o elemento `<div id="hero-placeholder">`
+
+- [ ] **Step 3: Substituir números da seção de métricas**
+
+Atualizar os valores `data-target` e prefixos (R$, %, +) com os números reais confirmados pela empresa.
+
+- [ ] **Step 4: Substituir logos das empresas (Seção 4)**
+
+Quando os logos estiverem disponíveis:
+- Substituir os divs de placeholder pelo `<img>` com `mix-blend-multiply` (fundo claro) ou `mix-blend-screen` (fundo escuro)
+- Adicionar `width` e `height` nos atributos
+
+- [ ] **Step 5: Substituir equipe**
+
+Para cada membro da equipe, atualizar:
+- `data-name` com nome real
+- `data-role` com cargo real
+- `data-company` com empresa
+- `data-img` com URL da foto (hospedada em CDN, 100x100px)
+- Atributo `src` da `<img>` no accordion mobile
+
+- [ ] **Step 6: Substituir iframe do mapa**
+
+Ir em Google Maps → buscar "R. Maestro Inácio Stábile, 99, Ribeirão Preto" → Compartilhar → Incorporar mapa → copiar o `src` do iframe gerado.
+
+- [ ] **Step 7: Verificar checklist completo de GHL**
+
+```
+[ ] Abrir index.html no navegador local — sem erros no console
+[ ] Testar em mobile (DevTools → toggle device toolbar → iPhone 12)
+[ ] Countdown contando corretamente
+[ ] Todos os CTAs com link correto
+[ ] Vídeo autoplay (se inserido): muted + loop + playsinline, sem preload
+[ ] Seção equipe: cursor card no desktop, accordion no mobile
+[ ] FAQ accordion abre/fecha corretamente
+[ ] Fade-up funciona ao rolar
+[ ] Contadores animam ao entrar no viewport
+[ ] Navbar muda ao scrollar
+```
+
+- [ ] **Step 8: Commit final**
+
+```bash
+git add index.html
+git commit -m "feat: landing page completa — substituicoes finais e revisao GHL"
+```
+
+---
+
+## Referências Rápidas
+
+| Asset Pendente | Onde usar | Placeholder atual |
+|----------------|-----------|-------------------|
+| Link WhatsApp VIP | Todos os CTAs (5x) | `WHATSAPP_LINK` |
+| Vídeo MP4 hero | `<video src>` | Gradiente animado |
+| Números reais | Seção 2 (métricas) | 500, 50, 10, 98 |
+| Logo Top Life | Seção 4 | Placeholder `TL` |
+| Logo Realize-se | Seção 4 | Placeholder `RI` |
+| Fotos + nomes equipe | Seção 7 | `ui-avatars.com` |
+| Embed mapa real | Seção 8 | Iframe genérico |
+
+**Spec completa:** `docs/superpowers/specs/2026-03-10-landing-page-design.md`
