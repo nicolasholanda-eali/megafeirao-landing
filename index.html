@@ -126,7 +126,103 @@
     </div>
   </nav>
 
-  <!-- HERO VEM AQUI -->
+  <!-- ── HERO ───────────────────────────────────────── -->
+  <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20">
+
+    <!-- Vídeo de fundo (substituir src quando disponível) -->
+    <video
+      class="absolute inset-0 w-full h-full object-cover"
+      autoplay muted loop playsinline
+      id="hero-video"
+      style="display: none;">
+      <source src="VIDEO_URL_AQUI" type="video/mp4" />
+    </video>
+
+    <!-- Placeholder gradiente (remover quando vídeo for inserido) -->
+    <div id="hero-placeholder" class="absolute inset-0"
+         style="background: linear-gradient(135deg, #011e40 0%, #012e60 40%, #023d80 70%, #011e40 100%);">
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-green/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-yellow/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-brand-blue/75"></div>
+
+    <!-- Conteúdo -->
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+
+      <!-- Badge evento -->
+      <div class="inline-flex items-center gap-2 border border-brand-green/40 rounded-full px-4 py-1.5 mb-6 fade-up stagger-1">
+        <span class="w-2 h-2 bg-brand-green rounded-full animate-pulse"></span>
+        <span class="text-brand-green text-xs font-bold tracking-widest uppercase">Evento Gratuito · 20, 21 e 22 de Março</span>
+      </div>
+
+      <!-- Countdown -->
+      <div class="flex justify-center gap-3 mb-8 fade-up stagger-2">
+        <div class="text-center">
+          <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+            <span id="countdown-days" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+            <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Dias</span>
+          </div>
+        </div>
+        <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+        <div class="text-center">
+          <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+            <span id="countdown-hours" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+            <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Horas</span>
+          </div>
+        </div>
+        <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+        <div class="text-center">
+          <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+            <span id="countdown-minutes" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+            <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Min</span>
+          </div>
+        </div>
+        <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
+        <div class="text-center">
+          <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[72px]">
+            <span id="countdown-seconds" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
+            <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Seg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-4 fade-up stagger-3">
+        A sua casa própria<br>
+        <span class="text-brand-green">nunca esteve tão perto.</span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-medium leading-relaxed fade-up stagger-4">
+        Em apenas <strong class="text-brand-yellow">1 único dia</strong>, você faz todo o processo
+        e sai mais perto de virar a chave da sua casa.
+      </p>
+
+      <!-- CTA -->
+      <div class="fade-up" style="transition-delay: 400ms;">
+        <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+           class="cta-pulse inline-flex items-center gap-3 bg-brand-yellow text-brand-blue font-black text-lg px-8 py-4 rounded-2xl transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.107 1.523 5.83L0 24l6.341-1.501A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.376l-.36-.213-3.728.882.948-3.625-.234-.373A9.818 9.818 0 0112 2.182c5.428 0 9.818 4.39 9.818 9.818S17.428 21.818 12 21.818z"/>
+          </svg>
+          QUERO PARTICIPAR GRÁTIS
+        </a>
+        <p class="text-white/40 text-sm mt-3">Ribeirão Preto · Vagas limitadas · Sem custo</p>
+      </div>
+
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+      <span class="text-white/30 text-xs uppercase tracking-widest">Role para baixo</span>
+      <svg class="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
 
 </div>
 
@@ -154,6 +250,33 @@ window.addEventListener('scroll', () => {
     navbar.style.borderBottom = 'none';
   }
 }, { passive: true });
+
+// ── Countdown ──────────────────────────────────────
+function updateCountdown() {
+  const eventDate = new Date('2026-03-20T00:00:00-03:00');
+  const now = new Date();
+  const diff = eventDate - now;
+
+  if (diff <= 0) {
+    document.getElementById('countdown-days').textContent = '00';
+    document.getElementById('countdown-hours').textContent = '00';
+    document.getElementById('countdown-minutes').textContent = '00';
+    document.getElementById('countdown-seconds').textContent = '00';
+    return;
+  }
+
+  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  document.getElementById('countdown-days').textContent    = String(days).padStart(2, '0');
+  document.getElementById('countdown-hours').textContent   = String(hours).padStart(2, '0');
+  document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
+  document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
 // ── JS vai aqui ──
 </script>
