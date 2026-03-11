@@ -110,7 +110,23 @@
 <body class="bg-brand-blue">
 <div class="ghl-wrapper">
 
-  <!-- SEÇÕES VÃO AQUI -->
+  <!-- ── NAVBAR ─────────────────────────────────────── -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-brand-yellow rounded-lg flex items-center justify-center">
+          <span class="text-brand-blue font-black text-sm">MF</span>
+        </div>
+        <span class="text-white font-black text-sm tracking-wide hidden sm:block">MEGA FEIRÃO</span>
+      </div>
+      <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+         class="bg-brand-yellow text-brand-blue font-black text-xs px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors">
+        PARTICIPAR GRÁTIS
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO VEM AQUI -->
 
 </div>
 
@@ -125,6 +141,20 @@
 </div>
 
 <script>
+// ── Navbar scroll effect ────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.style.background = 'rgba(1, 46, 96, 0.95)';
+    navbar.style.backdropFilter = 'blur(12px)';
+    navbar.style.borderBottom = '1px solid rgba(154, 201, 35, 0.2)';
+  } else {
+    navbar.style.background = 'transparent';
+    navbar.style.backdropFilter = 'none';
+    navbar.style.borderBottom = 'none';
+  }
+}, { passive: true });
+
 // ── JS vai aqui ──
 </script>
 </body>
