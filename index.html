@@ -63,8 +63,8 @@
       70%  { box-shadow: 0 0 0 14px rgba(253, 200, 0, 0); }
       100% { box-shadow: 0 0 0 0 rgba(253, 200, 0, 0); }
     }
-    .cta-pulse { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    .cta-pulse:hover { animation: none; transform: translateY(-2px); transition: transform 0.2s; }
+    .cta-pulse { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; transition: transform 0.2s; }
+    .cta-pulse:hover { animation: none; transform: translateY(-2px); }
 
     /* ── Cards hover blur ───────────────────────────── */
     .cards-grid:hover .pain-card { filter: blur(2px); opacity: 0.5; transition: filter 0.3s, opacity 0.3s; }
@@ -78,7 +78,7 @@
 
     /* ── FAQ Accordion ──────────────────────────────── */
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-    .faq-answer.open { max-height: 300px; }
+    .faq-answer.open { max-height: 500px; }
 
     /* ── Timeline ───────────────────────────────────── */
     .timeline-line::before {
@@ -115,7 +115,7 @@
 </div>
 
 <!-- CURSOR CARD EQUIPE (fora do wrapper) -->
-<div id="team-cursor-card" class="hidden">
+<div id="team-cursor-card">
   <div class="bg-brand-blue border border-brand-green/30 rounded-xl p-4 w-56 shadow-2xl">
     <img id="team-cursor-img" src="" alt="" class="w-16 h-16 rounded-full object-cover mx-auto mb-2 border-2 border-brand-green" />
     <p id="team-cursor-name" class="text-white font-bold text-sm text-center"></p>
