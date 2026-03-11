@@ -92,6 +92,27 @@
     }
     .timeline-item:last-child .timeline-line::before { display: none; }
 
+    /* ── Parceria card ──────────────────────────────── */
+    .partner-card {
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .partner-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 32px 64px rgba(0,0,0,0.25);
+    }
+    .partner-logo-box {
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .partner-logo-box:hover { transform: translateY(-6px) scale(1.04); }
+    .plus-sign {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s;
+      animation: plus-pulse 3s ease-in-out infinite;
+    }
+    @keyframes plus-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.15); opacity: 0.8; }
+    }
+
     /* ── Equipe cursor card ─────────────────────────── */
     #team-cursor-card {
       position: fixed;
@@ -105,6 +126,68 @@
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
+
+    /* ── Equipe card animações ───────────────────────── */
+    .team-member {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.4s ease,
+                  border-color 0.3s ease,
+                  background-color 0.3s ease;
+    }
+    .team-member:hover {
+      transform: translateY(-12px) !important;
+      background-color: rgba(255,255,255,0.1) !important;
+    }
+    .team-member[data-company="Top Life"]:hover {
+      border-color: rgba(253,200,0,0.55);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 32px rgba(253,200,0,0.12);
+    }
+    .team-member[data-company="Realize-se Imóveis"]:hover {
+      border-color: rgba(154,201,35,0.55);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 32px rgba(154,201,35,0.12);
+    }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+    .team-avatar-wrap {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+    }
+    .team-avatar-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      animation: spin-slow 3s linear infinite;
+    }
+    .team-member[data-company="Top Life"] .team-avatar-ring {
+      background: conic-gradient(from 0deg, #fdc800 0deg, rgba(253,200,0,0.3) 120deg, transparent 210deg);
+    }
+    .team-member[data-company="Realize-se Imóveis"] .team-avatar-ring {
+      background: conic-gradient(from 0deg, #9ac923 0deg, rgba(154,201,35,0.3) 120deg, transparent 210deg);
+    }
+    .team-member:hover .team-avatar-ring { opacity: 1; }
+    .team-avatar-inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 1;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .team-member:hover .team-avatar-inner { transform: scale(1.08); }
+
+    /* Entrada com scale */
+    .team-scale-in {
+      opacity: 0;
+      transform: translateY(24px) scale(0.88);
+      transition: opacity 0.65s ease-out, transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .team-scale-in.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   </style>
 </head>
 <body class="bg-brand-blue">
@@ -116,99 +199,90 @@
       <div class="flex items-center gap-3">
         <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/6998c6875ba49846db0e31a6.png"
              alt="Mega Feirão da Casa Própria"
-             class="h-10 w-auto"
-             width="140" height="40" />
+             class="h-16 w-auto"
+             width="180" height="64" />
       </div>
-      <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
-         class="bg-brand-yellow text-brand-blue font-black text-xs px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors">
+      <a href="https://chat.whatsapp.com/Ffv3FOGv7rZBB3uzyk2Hxj" target="_blank" rel="noopener"
+         class="bg-brand-yellow text-brand-blue font-black text-sm px-6 py-3 rounded-xl hover:bg-yellow-300 transition-colors">
         PARTICIPAR GRÁTIS
       </a>
     </div>
   </nav>
 
   <!-- ── HERO ───────────────────────────────────────── -->
-  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20 pb-10"
-           style="background: linear-gradient(135deg, #011e40 0%, #012e60 50%, #011e40 100%);">
+  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20 pb-16"
+           style="background: linear-gradient(135deg, #011e40 0%, #012e60 60%, #011e40 100%);">
 
-    <!-- Blobs decorativos -->
-    <div class="absolute top-1/4 left-0 w-96 h-96 bg-brand-green/5 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-1/4 right-0 w-80 h-80 bg-brand-yellow/5 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Blob decorativo -->
+    <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-brand-green/4 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
 
         <!-- ── Coluna Esquerda: Texto ── -->
         <div>
 
-          <!-- Badge evento -->
-          <div class="inline-flex items-center gap-2 border border-brand-green/40 rounded-full px-4 py-1.5 mb-6 fade-up stagger-1">
-            <span class="w-2 h-2 bg-brand-green rounded-full animate-pulse"></span>
-            <span class="text-brand-green text-xs font-bold tracking-widest uppercase">Evento Gratuito · 20, 21 e 22 de Março</span>
+          <!-- Data / local -->
+          <div class="flex flex-wrap items-center gap-3 mb-6 fade-up stagger-1">
+            <span class="text-white/65 text-sm font-medium">📅 Dias 20, 21 e 22 de Março</span>
+            <span class="text-white/25 hidden sm:inline">|</span>
+            <span class="text-white/65 text-sm font-medium">📍 Ribeirão Preto</span>
           </div>
 
-          <!-- Headline -->
-          <h1 class="text-4xl sm:text-5xl font-black text-white leading-tight mb-4 fade-up stagger-2">
-            A sua casa própria<br>
-            <span class="text-brand-green">nunca esteve tão perto.</span>
+          <!-- Headline ALL CAPS – 2 linhas -->
+          <h1 class="font-black uppercase text-white mb-6 fade-up stagger-2"
+              style="font-size: clamp(2rem, 3.8vw, 3.8rem); line-height: 1.05; letter-spacing: -0.01em;">
+            A SUA CASA PRÓPRIA<br>
+            NUNCA ESTEVE TÃO <span class="text-brand-yellow">PERTO.</span>
           </h1>
 
-          <!-- Subheadline -->
-          <p class="text-white/80 text-lg max-w-xl mb-8 font-medium leading-relaxed fade-up stagger-3">
-            Em apenas <strong class="text-brand-yellow">1 único dia</strong>, você faz todo o processo
-            e sai mais perto de virar a chave da sua casa.
-          </p>
+          <!-- Subtítulo com borda verde esquerda -->
+          <div class="border-l-4 border-brand-green pl-5 mb-8 fade-up stagger-3">
+            <p class="text-white text-base md:text-lg font-medium leading-relaxed">
+              Em apenas <strong class="text-brand-yellow">1 único dia</strong>, você faz todo o processo
+              e sai mais perto de <strong>virar a chave da sua casa</strong>.
+            </p>
+          </div>
 
-          <!-- Countdown -->
-          <div class="flex gap-2 sm:gap-3 mb-8 fade-up stagger-4">
-            <div class="text-center">
-              <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-2 sm:px-4 py-3 min-w-[60px] sm:min-w-[72px]">
-                <span id="countdown-days" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
-                <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Dias</span>
-              </div>
+          <!-- Countdown (4 boxes, sem dois-pontos) -->
+          <div class="flex gap-3 mb-8 fade-up stagger-4">
+            <div class="bg-white/6 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[68px] text-center">
+              <span id="countdown-days" class="text-brand-yellow font-black text-3xl sm:text-4xl block leading-none">--</span>
+              <span class="text-white/50 text-xs font-bold mt-1 block uppercase tracking-wider">DIAS</span>
             </div>
-            <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
-            <div class="text-center">
-              <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-2 sm:px-4 py-3 min-w-[60px] sm:min-w-[72px]">
-                <span id="countdown-hours" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
-                <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Horas</span>
-              </div>
+            <div class="bg-white/6 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[68px] text-center">
+              <span id="countdown-hours" class="text-brand-yellow font-black text-3xl sm:text-4xl block leading-none">--</span>
+              <span class="text-white/50 text-xs font-bold mt-1 block uppercase tracking-wider">HRS</span>
             </div>
-            <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
-            <div class="text-center">
-              <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-2 sm:px-4 py-3 min-w-[60px] sm:min-w-[72px]">
-                <span id="countdown-minutes" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
-                <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Min</span>
-              </div>
+            <div class="bg-white/6 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[68px] text-center">
+              <span id="countdown-minutes" class="text-brand-yellow font-black text-3xl sm:text-4xl block leading-none">--</span>
+              <span class="text-white/50 text-xs font-bold mt-1 block uppercase tracking-wider">MIN</span>
             </div>
-            <span class="text-brand-yellow font-black text-2xl self-center pb-5 opacity-60">:</span>
-            <div class="text-center">
-              <div class="bg-white/5 border border-brand-yellow/30 rounded-xl px-2 sm:px-4 py-3 min-w-[60px] sm:min-w-[72px]">
-                <span id="countdown-seconds" class="text-brand-yellow font-black text-3xl block leading-none">--</span>
-                <span class="text-white/50 text-xs font-medium mt-1 block uppercase tracking-wider">Seg</span>
-              </div>
+            <div class="bg-white/6 border border-brand-yellow/30 rounded-xl px-4 py-3 min-w-[68px] text-center">
+              <span id="countdown-seconds" class="text-brand-yellow font-black text-3xl sm:text-4xl block leading-none">--</span>
+              <span class="text-white/50 text-xs font-bold mt-1 block uppercase tracking-wider">SEG</span>
             </div>
           </div>
 
-          <!-- CTA -->
-          <div class="fade-up" style="transition-delay: 400ms;">
-            <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
-               class="cta-pulse inline-flex items-center gap-3 bg-brand-yellow text-brand-blue font-black text-lg px-8 py-4 rounded-2xl transition-all">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.107 1.523 5.83L0 24l6.341-1.501A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.376l-.36-.213-3.728.882.948-3.625-.234-.373A9.818 9.818 0 0112 2.182c5.428 0 9.818 4.39 9.818 9.818S17.428 21.818 12 21.818z"/>
+          <!-- CTA verde com checkmark -->
+          <div class="fade-up" style="transition-delay: 450ms;">
+            <a href="https://chat.whatsapp.com/Ffv3FOGv7rZBB3uzyk2Hxj" target="_blank" rel="noopener"
+               class="cta-pulse inline-flex items-center gap-3 bg-brand-green text-brand-blue font-black text-lg px-8 py-5 rounded-2xl transition-all">
+              <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
               </svg>
-              QUERO PARTICIPAR GRÁTIS
+              QUERO PARTICIPAR AGORA
             </a>
-            <p class="text-white/40 text-sm mt-3">Ribeirão Preto · Vagas limitadas · Sem custo</p>
+            <p class="text-white/35 text-sm mt-3">Ribeirão Preto · Vagas limitadas · Sem custo</p>
           </div>
 
         </div>
 
-        <!-- ── Coluna Direita: Vídeo ── -->
-        <div class="relative fade-up stagger-2">
-          <div class="relative rounded-2xl overflow-hidden shadow-2xl" style="aspect-ratio: 9/16; max-height: 600px;">
+        <!-- ── Coluna Direita: Vídeo com borda verde ── -->
+        <div class="relative fade-up stagger-2 lg:pl-8">
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-brand-green"
+               style="aspect-ratio: 9/16; max-height: 600px;">
 
-            <!-- Vídeo (sem autoplay — usuário clica para iniciar com áudio) -->
             <video
               id="hero-video"
               class="w-full h-full object-cover"
@@ -217,23 +291,20 @@
               <source src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/69a603d1618c8d1d7559cf7e.mp4" type="video/mp4" />
             </video>
 
-            <!-- Overlay escuro (some ao dar play) -->
+            <!-- Overlay com play -->
             <div id="video-overlay"
                  class="absolute inset-0 bg-brand-blue/40 flex items-center justify-center cursor-pointer transition-opacity duration-300"
                  onclick="playHeroVideo()">
-
-              <!-- Botão Play -->
               <div class="w-20 h-20 bg-brand-yellow rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-200">
                 <svg class="w-8 h-8 text-brand-blue ml-1" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-
             </div>
 
           </div>
 
-          <!-- Badge flutuante abaixo do vídeo -->
+          <!-- Badge flutuante abaixo -->
           <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap">
             <div class="bg-brand-green text-brand-blue font-black text-xs px-4 py-2 rounded-full shadow-lg">
               📍 Mansão Realize-se · 20-22 Mar
@@ -246,8 +317,8 @@
     </div>
 
     <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-      <svg class="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-5 h-5 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
       </svg>
     </div>
@@ -256,31 +327,25 @@
 
   <!-- ── NÚMEROS ────────────────────────────────────── -->
   <section class="bg-brand-dark py-16 px-6">
-    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-3 gap-6">
 
       <div class="text-center fade-up stagger-1">
-        <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="500">0</span>
+        <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="1500">0</span>
         <span class="text-brand-yellow font-black text-4xl md:text-5xl">+</span>
         <p class="text-white/60 text-sm mt-2 font-medium">Famílias<br>Atendidas</p>
       </div>
 
       <div class="text-center fade-up stagger-2">
         <span class="text-brand-green font-black text-3xl md:text-4xl">R$</span>
-        <span class="text-brand-green font-black text-4xl md:text-5xl counter" data-target="50">0</span>
+        <span class="text-brand-green font-black text-4xl md:text-5xl counter" data-target="15">0</span>
         <span class="text-brand-green font-black text-4xl md:text-5xl">M+</span>
         <p class="text-white/60 text-sm mt-2 font-medium">Em Imóveis<br>Negociados</p>
       </div>
 
       <div class="text-center fade-up stagger-3">
-        <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="10">0</span>
+        <span class="text-brand-yellow font-black text-4xl md:text-5xl counter" data-target="5">0</span>
         <span class="text-brand-yellow font-black text-4xl md:text-5xl">+</span>
         <p class="text-white/60 text-sm mt-2 font-medium">Anos no<br>Mercado</p>
-      </div>
-
-      <div class="text-center fade-up stagger-4">
-        <span class="text-brand-green font-black text-4xl md:text-5xl counter" data-target="98">0</span>
-        <span class="text-brand-green font-black text-4xl md:text-5xl">%</span>
-        <p class="text-white/60 text-sm mt-2 font-medium">Taxa de<br>Aprovação</p>
       </div>
 
     </div>
@@ -352,63 +417,117 @@
   <section class="bg-brand-dark py-20 px-6">
     <div class="max-w-5xl mx-auto">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-        <div class="fade-up">
-          <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">A solução</span>
-          <h2 class="text-3xl md:text-4xl font-black text-white mt-3 mb-6 leading-tight">
-            O Mega Feirão da<br>
-            <span class="text-brand-green">Casa Própria</span>
-          </h2>
-          <p class="text-white/70 text-base leading-relaxed mb-6">
-            Em <strong class="text-white">1 único dia</strong>, você tem acesso direto aos melhores imóveis,
-            condições exclusivas do programa <strong class="text-brand-yellow">Minha Casa Minha Vida</strong>,
-            e especialistas prontos para aprovar seu financiamento na hora.
-          </p>
-          <p class="text-white/70 text-base leading-relaxed mb-8">
-            É um evento híbrido: você se prepara pelo WhatsApp VIP e comparece à
-            <strong class="text-white">Mansão Realize-se</strong> nos dias 20, 21 ou 22 de Março.
-          </p>
-          <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
-             class="inline-flex items-center gap-2 bg-brand-green text-brand-blue font-black px-6 py-3 rounded-xl hover:bg-green-400 transition-colors">
-            ENTRAR NO GRUPO VIP
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </a>
-        </div>
-
-        <div class="fade-up stagger-2">
-          <p class="text-white/40 text-xs uppercase tracking-widest mb-6 text-center">Realização</p>
-          <div class="flex flex-col gap-4">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4">
-              <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/695fe443d461d44d8c2ecfd9.png"
-                     alt="Top Life"
-                     class="w-full h-full object-cover"
-                     width="64" height="64" loading="lazy" decoding="async" />
-              </div>
-              <div>
-                <p class="text-white font-bold text-lg">Top Life</p>
-                <p class="text-white/50 text-sm">Especialistas em crédito imobiliário</p>
-              </div>
-            </div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4">
-              <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/69a4d37c753f1530de7264c9.jpg"
-                     alt="Realize-se Imóveis"
-                     class="w-full h-full object-cover"
-                     width="64" height="64" loading="lazy" decoding="async" />
-              </div>
-              <div>
-                <p class="text-white font-bold text-lg">Realize-se Imóveis</p>
-                <p class="text-white/50 text-sm">Os melhores imóveis de Ribeirão Preto</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <!-- Intro centrado -->
+      <div class="text-center mb-14 fade-up">
+        <span class="text-brand-yellow text-xs font-bold uppercase tracking-widest">A solução</span>
+        <h2 class="text-3xl md:text-4xl font-black text-white mt-3 mb-6 leading-tight">
+          O Mega Feirão da<br>
+          <span class="text-brand-green">Casa Própria</span>
+        </h2>
+        <p class="text-white/70 text-base leading-relaxed mb-4 max-w-2xl mx-auto">
+          Em <strong class="text-white">1 único dia</strong>, você tem acesso direto aos melhores imóveis,
+          condições exclusivas do programa <strong class="text-brand-yellow">Minha Casa Minha Vida</strong>,
+          e especialistas prontos para aprovar seu financiamento na hora.
+        </p>
+        <p class="text-white/70 text-base leading-relaxed max-w-2xl mx-auto">
+          Um evento híbrido: se prepare pelo WhatsApp VIP e compareça à
+          <strong class="text-white">Mansão Realize-se</strong> nos dias 20, 21 ou 22 de Março.
+        </p>
       </div>
+
+      <!-- Realização — destaque de marcas -->
+      <div class="mb-12 fade-up stagger-2">
+        <p class="text-center text-white/30 text-xs font-bold uppercase tracking-widest mb-8 flex items-center justify-center gap-3">
+          <span class="flex-1 h-px bg-white/10 max-w-[80px]"></span>
+          Realização
+          <span class="flex-1 h-px bg-white/10 max-w-[80px]"></span>
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Top Life -->
+          <div class="relative bg-gradient-to-br from-white/8 to-white/3 border border-white/15 rounded-3xl p-8 hover:border-brand-yellow/40 transition-all duration-300">
+            <div class="absolute top-5 right-5 bg-brand-yellow/10 border border-brand-yellow/25 rounded-full px-3 py-1">
+              <span class="text-brand-yellow text-xs font-bold">Construtora</span>
+            </div>
+            <div class="h-20 mb-6 flex items-center">
+              <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/695fe443d461d44d8c2ecfd9.png"
+                   alt="Top Life Construtora"
+                   class="max-h-full object-contain"
+                   width="180" height="80" loading="lazy" decoding="async" />
+            </div>
+            <h3 class="text-white font-black text-2xl mb-2">Top Life Construtora</h3>
+            <p class="text-white/55 text-sm leading-relaxed mb-6">Construtora referência no interior de SP, com empreendimentos em Ribeirão Preto e Campinas. Mais do que projetos, constrói sonhos.</p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Empreendimentos pelo Minha Casa Minha Vida (MCMV)
+              </li>
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Apartamentos de 2 e 3 dormitórios
+              </li>
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Atuação em Ribeirão Preto e Campinas
+              </li>
+            </ul>
+          </div>
+
+          <!-- Realize-se -->
+          <div class="relative bg-gradient-to-br from-white/8 to-white/3 border border-white/15 rounded-3xl p-8 hover:border-brand-green/40 transition-all duration-300">
+            <div class="absolute top-5 right-5 bg-brand-green/10 border border-brand-green/25 rounded-full px-3 py-1">
+              <span class="text-brand-green text-xs font-bold">Imóveis</span>
+            </div>
+            <div class="h-20 mb-6 flex items-center">
+              <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/69a4d37c753f1530de7264c9.jpg"
+                   alt="Realize-se Imóveis"
+                   class="max-h-full object-contain rounded-lg"
+                   width="180" height="80" loading="lazy" decoding="async" />
+            </div>
+            <h3 class="text-white font-black text-2xl mb-2">Realize-se Imóveis</h3>
+            <p class="text-white/55 text-sm leading-relaxed mb-6">Os melhores imóveis de Ribeirão Preto com condições especiais para o sonho da casa própria da sua família.</p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Portfólio exclusivo de imóveis na região
+              </li>
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Condições exclusivas no evento
+              </li>
+              <li class="flex items-center gap-3 text-white/75 text-sm">
+                <span class="w-5 h-5 rounded-full bg-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3 h-3 text-brand-green" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                </span>
+                Anfitriã oficial do Mega Feirão
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center fade-up stagger-3">
+        <a href="https://chat.whatsapp.com/Ffv3FOGv7rZBB3uzyk2Hxj" target="_blank" rel="noopener"
+           class="cta-pulse inline-flex items-center gap-3 bg-brand-green text-brand-blue font-black px-8 py-4 rounded-xl hover:bg-green-400 text-lg">
+          ENTRAR NO GRUPO VIP
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -534,120 +653,64 @@
     </div>
   </section>
 
-  <!-- ── EQUIPE ─────────────────────────────────────── -->
-  <section class="bg-brand-blue py-20 px-6" id="team-section">
-    <div class="max-w-5xl mx-auto">
+  <!-- ── ESPECIALISTAS / PARCERIA ──────────────────── -->
+  <section class="bg-brand-blue py-24 px-6" id="team-section">
+    <div class="max-w-4xl mx-auto text-center">
 
-      <div class="text-center mb-14 fade-up">
+      <!-- Headline -->
+      <div class="fade-up mb-4">
         <span class="text-brand-green text-xs font-bold uppercase tracking-widest">Quem cuida de você</span>
-        <h2 class="text-3xl md:text-4xl font-black text-white mt-3">
-          Especialistas prontos<br>para te atender
-        </h2>
       </div>
-
-      <!-- Desktop: grid com hover -->
-      <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4" id="team-grid">
-
-        <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-1"
-             data-name="NOME DO RESPONSÁVEL"
-             data-role="Diretor Comercial"
-             data-company="Top Life"
-             data-img="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=128">
-          <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-yellow/30 group-hover:border-brand-yellow transition-colors">
-            <img src="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=128"
-                 alt="Top Life" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
-          </div>
-          <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-          <p class="text-brand-green text-xs mt-1">Diretor Comercial</p>
-          <p class="text-white/40 text-xs mt-0.5">Top Life</p>
-        </div>
-
-        <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-2"
-             data-name="NOME DO RESPONSÁVEL"
-             data-role="Diretora de Vendas"
-             data-company="Realize-se Imóveis"
-             data-img="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=128">
-          <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-green/30 group-hover:border-brand-green transition-colors">
-            <img src="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=128"
-                 alt="Realize-se" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
-          </div>
-          <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-          <p class="text-brand-green text-xs mt-1">Diretora de Vendas</p>
-          <p class="text-white/40 text-xs mt-0.5">Realize-se Imóveis</p>
-        </div>
-
-        <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-3"
-             data-name="NOME DO RESPONSÁVEL"
-             data-role="Especialista MCMV"
-             data-company="Top Life"
-             data-img="https://ui-avatars.com/api/?name=TL&background=023d80&color=fdc800&size=128">
-          <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-yellow/30 group-hover:border-brand-yellow transition-colors">
-            <img src="https://ui-avatars.com/api/?name=TL&background=023d80&color=fdc800&size=128"
-                 alt="Top Life" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
-          </div>
-          <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-          <p class="text-brand-green text-xs mt-1">Especialista MCMV</p>
-          <p class="text-white/40 text-xs mt-0.5">Top Life</p>
-        </div>
-
-        <div class="team-member group relative bg-white/5 border border-white/10 rounded-2xl p-6 text-center cursor-default transition-all duration-300 hover:bg-white/10 fade-up stagger-4"
-             data-name="NOME DO RESPONSÁVEL"
-             data-role="Consultora de Imóveis"
-             data-company="Realize-se Imóveis"
-             data-img="https://ui-avatars.com/api/?name=RI&background=023d80&color=9ac923&size=128">
-          <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-brand-green/30 group-hover:border-brand-green transition-colors">
-            <img src="https://ui-avatars.com/api/?name=RI&background=023d80&color=9ac923&size=128"
-                 alt="Realize-se" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async"/>
-          </div>
-          <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-          <p class="text-brand-green text-xs mt-1">Consultora de Imóveis</p>
-          <p class="text-white/40 text-xs mt-0.5">Realize-se Imóveis</p>
-        </div>
-
+      <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4 fade-up stagger-1">
+        O Mega Feirão da Casa Própria<br>é uma parceria da
+      </h2>
+      <div class="inline-block fade-up stagger-2 mb-6">
+        <span class="block text-2xl md:text-4xl font-black px-6 py-3 rounded-xl border-4 border-brand-green text-brand-green tracking-wide">
+          TOP LIFE E REALIZE-SE IMÓVEIS
+        </span>
       </div>
-
-      <!-- Mobile: accordion -->
-      <div class="md:hidden flex flex-col gap-3" id="team-accordion">
-
-        <div class="team-acc-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-1">
-          <button class="team-acc-btn w-full flex items-center gap-4 p-4 text-left" onclick="toggleTeamAccordion(this)">
-            <img src="https://ui-avatars.com/api/?name=TL&background=012e60&color=fdc800&size=64"
-                 alt="Top Life" class="w-12 h-12 rounded-full border border-brand-yellow/30 flex-shrink-0" width="48" height="48"/>
-            <div class="flex-1">
-              <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-              <p class="text-brand-green text-xs">Top Life</p>
-            </div>
-            <svg class="team-acc-icon w-5 h-5 text-white/40 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="team-acc-body max-h-0 overflow-hidden transition-all duration-300">
-            <p class="px-4 pb-4 text-white/60 text-sm">Diretor Comercial especialista em crédito imobiliário e aprovações MCMV.</p>
-          </div>
-        </div>
-
-        <div class="team-acc-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden fade-up stagger-2">
-          <button class="team-acc-btn w-full flex items-center gap-4 p-4 text-left" onclick="toggleTeamAccordion(this)">
-            <img src="https://ui-avatars.com/api/?name=RI&background=012e60&color=9ac923&size=64"
-                 alt="Realize-se" class="w-12 h-12 rounded-full border border-brand-green/30 flex-shrink-0" width="48" height="48"/>
-            <div class="flex-1">
-              <p class="text-white font-bold text-sm">NOME DO RESPONSÁVEL</p>
-              <p class="text-brand-green text-xs">Realize-se Imóveis</p>
-            </div>
-            <svg class="team-acc-icon w-5 h-5 text-white/40 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="team-acc-body max-h-0 overflow-hidden transition-all duration-300">
-            <p class="px-4 pb-4 text-white/60 text-sm">Diretora de vendas com vasta experiência em imóveis residenciais na região.</p>
-          </div>
-        </div>
-
-      </div>
-
-      <p class="text-center text-white/40 text-sm mt-8 fade-up">
-        * Nomes e fotos reais serão inseridos antes do lançamento
+      <p class="text-white/65 text-base md:text-lg max-w-xl mx-auto mb-14 fade-up stagger-3">
+        De 20 a 22 de março, unimos a qualidade da
+        <strong class="text-brand-yellow">Top Life</strong>
+        com a credibilidade da
+        <strong class="text-brand-green">Realize-se Imóveis</strong>.
       </p>
+
+      <!-- Card de parceria -->
+      <div class="partner-card bg-white rounded-3xl p-10 md:p-14 fade-up stagger-3">
+        <p class="text-brand-blue font-black text-xl md:text-2xl mb-10">
+          Duas potências unidas para você sair do aluguel
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16">
+
+          <!-- Top Life -->
+          <div class="partner-logo-box flex flex-col items-center gap-3 cursor-default">
+            <div class="bg-white rounded-2xl shadow-lg px-8 py-5 flex items-center justify-center" style="min-width:160px; min-height:90px;">
+              <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/695fe443d461d44d8c2ecfd9.png"
+                   alt="Top Life"
+                   class="max-h-14 max-w-[140px] object-contain"
+                   width="140" height="56" loading="lazy" decoding="async"/>
+            </div>
+            <span class="text-brand-blue/60 text-sm font-medium">Crédito Imobiliário</span>
+          </div>
+
+          <!-- + -->
+          <div class="plus-sign text-brand-blue font-black text-5xl md:text-6xl leading-none select-none fade-up stagger-2">+</div>
+
+          <!-- Realize-se -->
+          <div class="partner-logo-box flex flex-col items-center gap-3 cursor-default">
+            <div class="bg-white rounded-2xl shadow-lg px-8 py-5 flex items-center justify-center" style="min-width:160px; min-height:90px;">
+              <img src="https://assets.cdn.filesafe.space/qRGJ0RFX9qNN90OhtGnB/media/69a4d37c753f1530de7264c9.jpg"
+                   alt="Realize-se Imóveis"
+                   class="max-h-14 max-w-[140px] object-contain rounded-lg"
+                   width="140" height="56" loading="lazy" decoding="async"/>
+            </div>
+            <span class="text-brand-blue/60 text-sm font-medium">Imóveis</span>
+          </div>
+
+        </div>
+      </div>
 
     </div>
   </section>
@@ -842,9 +905,9 @@
           </button>
           <div class="faq-answer px-6">
             <p class="text-white/60 text-sm leading-relaxed pb-6">
-              No próprio evento, nossos especialistas da Top Life analisam seu perfil e simulam o
+              No próprio evento, nossos especialistas analisam seu perfil e simulam o
               financiamento na hora. Se aprovado, você recebe a carta de crédito e já pode
-              formalizar a compra do imóvel escolhido.
+              escolher seu imóvel com a Top Life Construtora.
             </p>
           </div>
         </div>
@@ -892,7 +955,7 @@
       </p>
 
       <div class="fade-up stagger-3">
-        <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+        <a href="https://chat.whatsapp.com/Ffv3FOGv7rZBB3uzyk2Hxj" target="_blank" rel="noopener"
            class="cta-pulse inline-flex items-center gap-3 bg-brand-yellow text-brand-blue font-black text-xl px-10 py-5 rounded-2xl transition-all">
           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -938,7 +1001,7 @@
 
         <div>
           <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Participar</h4>
-          <a href="WHATSAPP_LINK" target="_blank" rel="noopener"
+          <a href="https://chat.whatsapp.com/Ffv3FOGv7rZBB3uzyk2Hxj" target="_blank" rel="noopener"
              class="inline-flex items-center gap-2 bg-brand-green text-brand-blue font-bold text-sm px-4 py-2.5 rounded-lg hover:bg-green-400 transition-colors">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -1022,7 +1085,7 @@ const fadeObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.15 });
 
-document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+document.querySelectorAll('.fade-up, .team-scale-in').forEach(el => fadeObserver.observe(el));
 
 // ── Contadores animados ─────────────────────────────
 const counterObserver = new IntersectionObserver((entries) => {
