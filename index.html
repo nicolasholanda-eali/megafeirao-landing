@@ -113,81 +113,6 @@
       50%       { transform: scale(1.15); opacity: 0.8; }
     }
 
-    /* ── Equipe cursor card ─────────────────────────── */
-    #team-cursor-card {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.95);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-    #team-cursor-card.visible {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    /* ── Equipe card animações ───────────────────────── */
-    .team-member {
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  box-shadow 0.4s ease,
-                  border-color 0.3s ease,
-                  background-color 0.3s ease;
-    }
-    .team-member:hover {
-      transform: translateY(-12px) !important;
-      background-color: rgba(255,255,255,0.1) !important;
-    }
-    .team-member[data-company="Top Life"]:hover {
-      border-color: rgba(253,200,0,0.55);
-      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 32px rgba(253,200,0,0.12);
-    }
-    .team-member[data-company="Realize-se Imóveis"]:hover {
-      border-color: rgba(154,201,35,0.55);
-      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 32px rgba(154,201,35,0.12);
-    }
-    @keyframes spin-slow { to { transform: rotate(360deg); } }
-    .team-avatar-wrap {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1rem;
-    }
-    .team-avatar-ring {
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      animation: spin-slow 3s linear infinite;
-    }
-    .team-member[data-company="Top Life"] .team-avatar-ring {
-      background: conic-gradient(from 0deg, #fdc800 0deg, rgba(253,200,0,0.3) 120deg, transparent 210deg);
-    }
-    .team-member[data-company="Realize-se Imóveis"] .team-avatar-ring {
-      background: conic-gradient(from 0deg, #9ac923 0deg, rgba(154,201,35,0.3) 120deg, transparent 210deg);
-    }
-    .team-member:hover .team-avatar-ring { opacity: 1; }
-    .team-avatar-inner {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      overflow: hidden;
-      z-index: 1;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .team-member:hover .team-avatar-inner { transform: scale(1.08); }
-
-    /* Entrada com scale */
-    .team-scale-in {
-      opacity: 0;
-      transform: translateY(24px) scale(0.88);
-      transition: opacity 0.65s ease-out, transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .team-scale-in.visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
   </style>
 </head>
 <body class="bg-brand-blue">
@@ -692,7 +617,7 @@
                    class="max-h-14 max-w-[140px] object-contain"
                    width="140" height="56" loading="lazy" decoding="async"/>
             </div>
-            <span class="text-brand-blue/60 text-sm font-medium">Crédito Imobiliário</span>
+            <span class="text-brand-blue/60 text-sm font-medium">Construtora</span>
           </div>
 
           <!-- + -->
@@ -1023,16 +948,6 @@
 
 </div>
 
-<!-- CURSOR CARD EQUIPE (fora do wrapper) -->
-<div id="team-cursor-card">
-  <div class="bg-brand-blue border border-brand-green/30 rounded-xl p-4 w-56 shadow-2xl">
-    <img id="team-cursor-img" src="" alt="" class="w-16 h-16 rounded-full object-cover mx-auto mb-2 border-2 border-brand-green" />
-    <p id="team-cursor-name" class="text-white font-bold text-sm text-center"></p>
-    <p id="team-cursor-role" class="text-brand-green text-xs text-center mt-1"></p>
-    <p id="team-cursor-company" class="text-white/50 text-xs text-center mt-1"></p>
-  </div>
-</div>
-
 <script>
 // ── Navbar scroll effect ────────────────────────────
 const navbar = document.getElementById('navbar');
@@ -1085,7 +1000,7 @@ const fadeObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.15 });
 
-document.querySelectorAll('.fade-up, .team-scale-in').forEach(el => fadeObserver.observe(el));
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
 // ── Contadores animados ─────────────────────────────
 const counterObserver = new IntersectionObserver((entries) => {
@@ -1111,62 +1026,6 @@ const counterObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 
 document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
-
-// ── Equipe: cursor card (desktop) ──────────────────
-const teamCard = document.getElementById('team-cursor-card');
-document.body.appendChild(teamCard); // necessário: transform no ghl-wrapper quebra position:fixed
-
-let cardX = 0, cardY = 0;
-let mouseX = 0, mouseY = 0;
-
-document.querySelectorAll('.team-member').forEach(member => {
-  member.addEventListener('mouseenter', () => {
-    document.getElementById('team-cursor-img').src = member.dataset.img;
-    document.getElementById('team-cursor-img').alt = member.dataset.name;
-    document.getElementById('team-cursor-name').textContent = member.dataset.name;
-    document.getElementById('team-cursor-role').textContent = member.dataset.role;
-    document.getElementById('team-cursor-company').textContent = member.dataset.company;
-    teamCard.classList.add('visible');
-
-    document.querySelectorAll('.team-member').forEach(m => {
-      if (m !== member) { m.style.opacity = '0.3'; m.style.filter = 'blur(1px)'; }
-    });
-  });
-
-  member.addEventListener('mouseleave', () => {
-    teamCard.classList.remove('visible');
-    document.querySelectorAll('.team-member').forEach(m => {
-      m.style.opacity = ''; m.style.filter = '';
-    });
-  });
-});
-
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX; mouseY = e.clientY;
-}, { passive: true });
-
-(function animateCard() {
-  cardX += (mouseX - cardX) * 0.12;
-  cardY += (mouseY - cardY) * 0.12;
-  teamCard.style.left = cardX + 'px';
-  teamCard.style.top  = cardY + 'px';
-  requestAnimationFrame(animateCard);
-})();
-
-// ── Equipe: accordion (mobile) ─────────────────────
-function toggleTeamAccordion(btn) {
-  const body = btn.nextElementSibling;
-  const icon = btn.querySelector('.team-acc-icon');
-  const isOpen = body.style.maxHeight && body.style.maxHeight !== '0px';
-
-  document.querySelectorAll('.team-acc-body').forEach(b => b.style.maxHeight = '0px');
-  document.querySelectorAll('.team-acc-icon').forEach(i => i.style.transform = '');
-
-  if (!isOpen) {
-    body.style.maxHeight = body.scrollHeight + 'px';
-    icon.style.transform = 'rotate(180deg)';
-  }
-}
 
 // ── FAQ Accordion ───────────────────────────────────
 function toggleFaq(btn) {
